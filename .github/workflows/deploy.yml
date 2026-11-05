@@ -1,0 +1,52 @@
+name: CI/CD Pipeline - Web Tien Dao
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # STAGE 1: Kiểm tra code (CI)
+  kiem-tra-code:
+    name: Kiem Tra & Build Thu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keo code ve may ao
+        uses: actions/checkout@v4
+
+      - name: Cai dat Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Cai dat dependencies Frontend
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build thu Frontend
+        run: |
+          cd frontend
+          npm run build
+
+  # STAGE 2: Trien khai (CD) - Chi chay khi push vao nhanh main va Stage 1 vuot qua
+  deploy:
+    name: Deploy Len Vercel
+    needs: kiem-tra-code
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keo code ve
+        uses: actions/checkout@v4
+
+      - name: Deploy Frontend len Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./frontend

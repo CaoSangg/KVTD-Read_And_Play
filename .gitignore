@@ -1,0 +1,36 @@
+# Python & Virtual Environments
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# Node & Frontend
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# System & OS temp files
+.DS_Store
+Thumbs.db
+~$*.docx
+
+# Environment variables 
+.env
+.env.local
+.env.*.local
+
+# File PDF bài giảng 
+*.pdf
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.bmp
+*.svg
+*.ico
