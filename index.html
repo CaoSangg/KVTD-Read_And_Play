@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Khấu Vấn Tiên Đạo - Cổng Huyền Giới</title>
-  <!-- Google Fonts: Bungee Serif & Playfair / Noto Serif -->
+  <title>Khấu Vấn Tiên Đạo - Tàng Kinh Các</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Noto+Serif+TC:wght@400;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Noto+Serif+TC:wght@400;700&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -17,250 +16,235 @@
     }
 
     body {
-      background-color: #050608;
+      background-color: #020305;
       color: #e5dec9;
       font-family: 'Noto Serif TC', serif;
       overflow: hidden;
       height: 100vh;
       width: 100vw;
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Ambient mystical background */
-    .sanctum-bg {
+    /* Fix tỉ lệ 16:9 */
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 56.25vw;   /* 16:9 */
+      max-height: 100vh;
+      max-width: 177.78vh; /* 16:9 */
+      overflow: hidden;
+    }
+
+    /* Mỗi layer đều phủ tuyệt đối, trùng khít */
+    .layer {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 50%, #151828 0%, #090c13 55%, #020306 100%);
-      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* LAYER 0: Ảnh gốc home_image.png */
+    .bg-layer {
       z-index: 1;
+      filter: brightness(0.93) contrast(1.04);
     }
 
-    /* Fog / mystical dust aura */
-    .mist-layer {
-      position: absolute;
-      inset: -50%;
-      background: radial-gradient(ellipse at center, rgba(147, 197, 253, 0.04) 0%, transparent 60%);
-      animation: rotateMist 80s linear infinite;
+    /* ============================================
+       SPRITE LAYERS (các vật phẩm cắt riêng)
+       - Bình thường: trong suốt, ẩn hoàn toàn
+       - Khi hover vào vùng cảm ứng: hiện lên với
+         hào quang ôm sát viền vật thể
+       ============================================ */
+    .sprite-layer {
+      z-index: 10;
+      opacity: 0;
       pointer-events: none;
+      transition: opacity 0.35s ease, filter 0.35s ease;
     }
 
-    @keyframes rotateMist {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    /* ============================================
+       VÙNG CẢM ỨNG (Hitbox) — trong suốt, đặt
+       đúng vị trí vật phẩm trên ảnh nền
+       ============================================ */
+    .hitbox {
+      position: absolute;
+      z-index: 20;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
     }
 
-    /* Floating Qi Particles Canvas */
+    /* Tooltip phong cách cổ đại */
+    .hitbox-tooltip {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      background: rgba(10, 15, 30, 0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(212, 175, 55, 0.8);
+      padding: 7px 18px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      color: #fef08a;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.7), 0 0 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .hitbox:hover .hitbox-tooltip {
+      opacity: 1;
+    }
+
+    /* Cổ Thư */
+    .hitbox-tome {
+      top: 48%;
+      left: 7%;
+      width: 13%;
+      height: 18%;
+    }
+
+    .hitbox-tome:hover ~ .sprite-tome {
+      opacity: 1;
+      filter:
+        drop-shadow(0 0 5px rgba(255, 248, 225, 0.4))
+        drop-shadow(0 0 12px rgba(245, 230, 195, 0.25))
+        drop-shadow(0 0 24px rgba(225, 210, 175, 0.14))
+        brightness(1.08);
+    }
+
+    .hitbox-tome:active ~ .sprite-tome {
+      opacity: 1;
+      filter:
+        drop-shadow(0 0 8px rgba(255, 252, 235, 0.55))
+        drop-shadow(0 0 18px rgba(245, 235, 205, 0.35))
+        drop-shadow(0 0 30px rgba(230, 215, 185, 0.2))
+        brightness(1.12);
+    }
+
+    /* Ngọc Phật */
+    .hitbox-buddha {
+      top: 40%;
+      right: 16.5%;
+      width: 6%;
+      height: 12%;
+    }
+
+    .hitbox-buddha:hover ~ .sprite-buddha {
+      opacity: 1;
+      filter:
+        drop-shadow(0 0 5px rgba(255, 248, 225, 0.4))
+        drop-shadow(0 0 12px rgba(245, 230, 195, 0.25))
+        drop-shadow(0 0 24px rgba(225, 210, 175, 0.14))
+        brightness(1.08);
+    }
+
+    .hitbox-buddha:active ~ .sprite-buddha {
+      opacity: 1;
+      filter:
+        drop-shadow(0 0 8px rgba(255, 252, 235, 0.55))
+        drop-shadow(0 0 18px rgba(245, 235, 205, 0.35))
+        drop-shadow(0 0 30px rgba(230, 215, 185, 0.2))
+        brightness(1.12);
+    }
+
+    /* Sơn Hà Đồ */
+    .hitbox-map {
+      top: 22%;
+      left: 33%;
+      width: 33%;
+      height: 35%;
+    }
+
+    .hitbox-map:hover ~ .sprite-map {
+      opacity: 1;
+      filter:
+        drop-shadow(0 0 5px rgba(230, 225, 240, 0.35))
+        drop-shadow(0 0 14px rgba(210, 205, 225, 0.22))
+        drop-shadow(0 0 28px rgba(190, 185, 215, 0.12))
+        brightness(1.08);
+    }
+
+    .hitbox-map:active ~ .sprite-map {
+      opacity: 1;
+      filter:
+        drop-shadow(0 0 8px rgba(240, 235, 250, 0.5))
+        drop-shadow(0 0 18px rgba(220, 215, 235, 0.3))
+        drop-shadow(0 0 30px rgba(200, 195, 225, 0.18))
+        brightness(1.12);
+    }
+
+    /* ============================================
+       HẠT BỤI LINH KHÍ (Canvas)
+       ============================================ */
     #particles-canvas {
       position: absolute;
       inset: 0;
+      z-index: 5;
       pointer-events: none;
-      z-index: 2;
     }
 
-    /* Main container */
-    .chamber {
-      position: relative;
-      z-index: 10;
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 40px 20px;
-    }
-
-    /* Header */
-    header {
+    /* ============================================
+       HEADER & FOOTER OVERLAY
+       ============================================ */
+    .sanctum-header {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      z-index: 30;
       text-align: center;
-      margin-top: 10px;
+      pointer-events: none;
     }
 
-    .realm-title {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 2.6rem;
+    .sanctum-title {
+      font-family: 'Playfair Display', 'Merriweather', serif;
+      font-weight: 800;
+      font-size: clamp(1.4rem, 2.8vw, 2.6rem);
       letter-spacing: 6px;
+      text-transform: uppercase;
       background: linear-gradient(180deg, #fff7d6 0%, #d4af37 60%, #8c6d1f 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 20px rgba(212, 175, 55, 0.35));
     }
 
-    .realm-subtitle {
-      font-size: 0.95rem;
+    .sanctum-subtitle {
+      font-size: clamp(0.6rem, 1vw, 0.88rem);
       letter-spacing: 4px;
-      color: #94a3b8;
-      margin-top: 6px;
-      font-style: italic;
-    }
-
-    /* Sanctum Room / Item Exhibition Stage */
-    .pedestal-stage {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 70px;
-      max-width: 1200px;
-      width: 100%;
-      flex-wrap: wrap;
-    }
-
-    /* Artifact Card */
-    .artifact-card {
-      position: relative;
-      width: 280px;
-      height: 380px;
-      background: radial-gradient(circle at 50% 30%, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.7) 100%);
-      border: 1px solid rgba(212, 175, 55, 0.2);
-      border-radius: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .artifact-card:hover {
-      transform: translateY(-16px) scale(1.03);
-      border-color: rgba(212, 175, 55, 0.7);
-    }
-
-    /* Aura glow behind items */
-    .artifact-card .aura {
-      position: absolute;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      filter: blur(40px);
-      transition: all 0.5s ease;
-      z-index: 1;
-    }
-
-    /* Special Theme for Jade Buddha */
-    .card-buddha .aura {
-      background: rgba(251, 191, 36, 0.25);
-    }
-    .card-buddha:hover .aura {
-      background: rgba(251, 191, 36, 0.6);
-      width: 180px;
-      height: 180px;
-      filter: blur(50px);
-    }
-    .card-buddha:hover {
-      box-shadow: 0 15px 45px rgba(212, 175, 55, 0.35);
-    }
-
-    /* Special Theme for Ancient Book */
-    .card-tome .aura {
-      background: rgba(56, 189, 248, 0.2);
-    }
-    .card-tome:hover .aura {
-      background: rgba(56, 189, 248, 0.5);
-      width: 180px;
-      height: 180px;
-      filter: blur(50px);
-    }
-    .card-tome:hover {
-      box-shadow: 0 15px 45px rgba(56, 189, 248, 0.3);
-    }
-
-    /* Special Theme for Map */
-    .card-map .aura {
-      background: rgba(168, 85, 247, 0.2);
-    }
-    .card-map:hover .aura {
-      background: rgba(168, 85, 247, 0.5);
-      width: 180px;
-      height: 180px;
-      filter: blur(50px);
-    }
-    .card-map:hover {
-      box-shadow: 0 15px 45px rgba(168, 85, 247, 0.3);
-    }
-
-    /* Visual Icon Representation */
-    .artifact-visual {
-      position: relative;
-      z-index: 2;
-      width: 130px;
-      height: 130px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.6s ease;
-    }
-
-    .artifact-card:hover .artifact-visual {
-      transform: scale(1.1) rotate(-3deg);
-    }
-
-    .visual-icon {
-      font-size: 5rem;
-      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
-    }
-
-    /* Item text */
-    .artifact-info {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .artifact-name {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: #f8fafc;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-    }
-
-    .artifact-card:hover .artifact-name {
-      color: #fef08a;
-    }
-
-    .artifact-desc {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      line-height: 1.5;
-    }
-
-    .action-tag {
-      margin-top: 14px;
-      display: inline-block;
-      font-size: 0.75rem;
-      padding: 5px 14px;
-      border-radius: 999px;
-      letter-spacing: 2px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
       color: #cbd5e1;
-      transition: all 0.3s ease;
+      margin-top: 4px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
     }
 
-    .artifact-card:hover .action-tag {
-      background: rgba(212, 175, 55, 0.2);
-      border-color: #d4af37;
-      color: #fef08a;
-    }
-
-    /* Footer hints */
-    footer {
-      font-size: 0.82rem;
-      color: #64748b;
-      letter-spacing: 1.5px;
+    /* Bottom Status Bar */
+    .sanctum-footer {
+      position: absolute;
+      bottom: 16px;
+      left: 0;
+      width: 100%;
       text-align: center;
+      z-index: 20;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      letter-spacing: 2px;
+      pointer-events: none;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.9);
     }
 
-    /* Modal dialog */
-    .portal-modal {
+    /* ============================================
+       MODAL (Ngọc Phật / Bản Đồ popup)
+       ============================================ */
+    .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(12px);
       z-index: 100;
       display: flex;
@@ -270,64 +254,54 @@
       pointer-events: none;
       transition: opacity 0.4s ease;
     }
-
-    .portal-modal.active {
+    .modal-overlay.active {
       opacity: 1;
       pointer-events: all;
     }
-
     .modal-box {
-      width: 90%;
-      max-width: 460px;
       background: #0f172a;
       border: 1px solid #d4af37;
       border-radius: 20px;
       padding: 36px 30px;
+      max-width: 440px;
       text-align: center;
-      box-shadow: 0 0 60px rgba(212, 175, 55, 0.25);
-      transform: scale(0.9);
+      box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
+      transform: scale(0.92);
       transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-
-    .portal-modal.active .modal-box {
+    .modal-overlay.active .modal-box {
       transform: scale(1);
     }
-
     .modal-box h3 {
-      font-size: 1.6rem;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
       color: #fef08a;
+      font-size: 1.4rem;
       margin-bottom: 12px;
-      letter-spacing: 2px;
     }
-
     .modal-box p {
       color: #cbd5e1;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       line-height: 1.6;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
-
     .modal-btn {
-      padding: 12px 28px;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
+      padding: 10px 24px;
+      background: linear-gradient(180deg, #d4af37 0%, #aa841c 100%);
       border: 1px solid #d4af37;
       border-radius: 8px;
-      background: linear-gradient(180deg, #d4af37 0%, #aa841c 100%);
       color: #050608;
       font-weight: 700;
+      letter-spacing: 2px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      font-size: 0.88rem;
     }
-
     .modal-btn:hover {
-      transform: translateY(-2px);
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
     }
-
     .modal-close {
-      margin-top: 16px;
       display: block;
+      margin-top: 14px;
       color: #64748b;
       font-size: 0.8rem;
       cursor: pointer;
@@ -337,163 +311,134 @@
 </head>
 <body>
 
-  <div class="sanctum-bg">
-    <div class="mist-layer"></div>
+<div class="stage">
+
+  <!-- LAYER 0: Ảnh nền gốc -->
+  <img src="images/home_image.png" alt="Thư Phòng Tu Tiên" class="layer bg-layer">
+
+  <!-- VÙNG CẢM ỨNG (hitbox) — phải đặt TRƯỚC các sprite để CSS ~ selector hoạt động -->
+  <a href="reader.html" class="hitbox hitbox-tome" title="Đọc Truyện">
+    <span class="hitbox-tooltip">CỔ THƯ</span>
+  </a>
+
+  <div class="hitbox hitbox-buddha" onclick="openModal('buddha')">
+    <span class="hitbox-tooltip">NGỌC PHẬT</span>
   </div>
 
+  <div class="hitbox hitbox-map" onclick="openModal('map')">
+    <span class="hitbox-tooltip"> SƠN HÀ ĐỒ</span>
+  </div>
+
+  <!-- SPRITE LAYERS: Ảnh vật phẩm cắt riêng, phủ trùng khít lên nền -->
+  <!-- Bình thường ẩn (opacity: 0), khi hover hitbox → hiện lên + hào quang viền -->
+  <img src="images/sub_image1.png" alt="" class="layer sprite-layer sprite-tome">
+  <img src="images/sub_image2.png" alt="" class="layer sprite-layer sprite-buddha">
+  <img src="images/sub_image3.png" alt="" class="layer sprite-layer sprite-map">
+
+  <!-- Hạt bụi linh khí -->
   <canvas id="particles-canvas"></canvas>
 
-  <div class="chamber">
-    <header>
-      <div class="realm-title">THƯ PHÒNG TU TIÊN</div>
-      <div class="realm-subtitle">Nhạn Quá Lưu Thanh • Nhân Quá Lưu Danh</div>
-    </header>
+  <!-- Header -->
+  <header class="sanctum-header">
+    <div class="sanctum-title">KHẤU VẤN TIÊN ĐẠO</div>
+  </header>
+</div>
 
-    <main class="pedestal-stage">
-      <!-- Cổ Thư: Đọc Truyện -->
-      <div class="artifact-card card-tome" onclick="openPortal('tome')">
-        <div class="aura"></div>
-        <div class="artifact-visual">
-          <span class="visual-icon">📜</span>
-        </div>
-        <div class="artifact-info">
-          <div class="artifact-name">Cổ Thư Tàng Kinh</div>
-          <div class="artifact-desc">Ghi chép hơn 3.000 chương tu chân truyền kỳ, vạn ngàn phong vân đại lục.</div>
-          <span class="action-tag">VÀO ĐỌC TRUYỆN</span>
-        </div>
-      </div>
-
-      <!-- Ngọc Phật: Xuyên Không Vào Game -->
-      <div class="artifact-card card-buddha" onclick="openPortal('buddha')">
-        <div class="aura"></div>
-        <div class="artifact-visual">
-          <span class="visual-icon">🪷</span>
-        </div>
-        <div class="artifact-info">
-          <div class="artifact-name">Ngọc Phật Bổn Mệnh</div>
-          <div class="artifact-desc">Bảo vật thần bí nhân vật chính mang theo khi xuyên không. Khởi động huyền trận.</div>
-          <span class="action-tag">XUYÊN KHÔNG VÀO GAME</span>
-        </div>
-      </div>
-
-      <!-- Bát Quái Bản Đồ: Thế Giới Quan -->
-      <div class="artifact-card card-map" onclick="openPortal('map')">
-        <div class="aura"></div>
-        <div class="artifact-visual">
-          <span class="visual-icon">🗺️</span>
-        </div>
-        <div class="artifact-info">
-          <div class="artifact-name">Cửu Châu Cổ Đồ</div>
-          <div class="artifact-desc">Khám phá thế giới quan đại lục, danh sách tông môn, địa đồ bí cảnh và điển tích.</div>
-          <span class="action-tag">XEM ĐỊA ĐỒ</span>
-        </div>
-      </div>
-    </main>
-
-    <footer>
-      <span>[ Gợi ý ]: Lia chuột vào bảo vật để cảm ứng linh khí. Click chọn ngọc vật để kích hoạt cơ duyên.</span>
-    </footer>
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3 id="modalTitle"></h3>
+    <p id="modalDesc"></p>
+    <button class="modal-btn" id="modalBtn"></button>
+    <span class="modal-close" onclick="closeModal()">Đóng</span>
   </div>
+</div>
 
-  <!-- Interactive Modal Portal -->
-  <div class="portal-modal" id="portalModal">
-    <div class="modal-box">
-      <h3 id="modalTitle">Tiêu Đề Bảo Vật</h3>
-      <p id="modalDesc">Nội dung mô tả bảo vật...</p>
-      <button class="modal-btn" id="modalActionBtn">XÁC NHẬN NHẬP TRẬN</button>
-      <span class="modal-close" onclick="closePortal()">Thu hồi thần thức (Đóng)</span>
-    </div>
-  </div>
+<script>
+  // Particles
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
 
-  <script>
-    // Floating Qi (Linh Khí) Particles
-    const canvas = document.getElementById('particles-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
+  function resize() {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+  class Particle {
+    constructor() {
+      this.reset();
     }
-    window.addEventListener('resize', resize);
-    resize();
-
-    class Particle {
-      constructor() {
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = -Math.random() * 0.4 - 0.1;
+      this.opacity = Math.random() * 0.5 + 0.1;
+      this.color = Math.random() > 0.4 ? '255, 215, 0' : '220, 240, 255';
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.y < 0 || this.x < 0 || this.x > canvas.width) {
         this.reset();
-      }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = canvas.height + Math.random() * 50;
-        this.size = Math.random() * 2.5 + 0.5;
-        this.speedY = Math.random() * 0.8 + 0.3;
-        this.speedX = (Math.random() - 0.5) * 0.4;
-        this.opacity = Math.random() * 0.6 + 0.2;
-        this.gold = Math.random() > 0.4;
-      }
-      update() {
-        this.y -= this.speedY;
-        this.x += this.speedX;
-        if (this.y < -10) this.reset();
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = this.gold 
-          ? `rgba(251, 191, 36, ${this.opacity})` 
-          : `rgba(186, 230, 253, ${this.opacity})`;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = this.gold ? '#fbbf24' : '#bae6fd';
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        this.y = canvas.height;
       }
     }
-
-    for (let i = 0; i < 70; i++) {
-      const p = new Particle();
-      p.y = Math.random() * canvas.height;
-      particles.push(p);
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+      ctx.fill();
     }
+  }
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      requestAnimationFrame(animate);
+  for (let i = 0; i < 45; i++) {
+    particles.push(new Particle());
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // Modal
+  function openModal(type) {
+    const overlay = document.getElementById('modalOverlay');
+    const title = document.getElementById('modalTitle');
+    const desc = document.getElementById('modalDesc');
+    const btn = document.getElementById('modalBtn');
+
+    if (type === 'buddha') {
+      title.innerText = '🪷 NGỌC PHẬT BỔN MỆNH';
+      desc.innerText = 'Thần vật thượng cổ ẩn chứa cơ duyên nghịch thiên. Không gian bí cảnh nhập vai thế giới mở 2.5D đang trong giai đoạn ngưng tụ linh khí...';
+      btn.innerText = 'ĐÃ RÕ (SẮP RA MẮT)';
+      btn.onclick = closeModal;
+    } else if (type === 'map') {
+      title.innerText = '🗺️ CỬU CHÂU SƠN HÀ ĐỒ';
+      desc.innerText = 'Bản đồ toàn cảnh Tu Chân Giới: Đông Cực Minh Hải, Bắc Hoang Hàn Cực, Nam Lĩnh Vu Cốc, Trung Châu Tiên Minh. Chưa mở khóa bản đồ chi tiết do tu vi chưa đủ.';
+      btn.innerText = 'THU HỒI BẢN ĐỒ';
+      btn.onclick = closeModal;
     }
-    animate();
+    overlay.classList.add('active');
+  }
 
-    // Portal Actions
-    const modal = document.getElementById('portalModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDesc');
-    const modalBtn = document.getElementById('modalActionBtn');
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
 
-    function openPortal(type) {
-      if (type === 'tome') {
-        modalTitle.textContent = 'MỞ CỔ THƯ TÀNG KINH';
-        modalDesc.textContent = 'Đưa ngươi bước vào không gian đọc hơn 3.000 chương truyện tu chân, tùy chỉnh giao diện thanh tịnh và lưu giữ tiến độ tu luyện.';
-        modalBtn.textContent = 'TIẾN VÀO ĐỌC TRUYỆN';
-        modalBtn.onclick = () => alert('Chuyển hướng đến Giao Diện Đọc Truyện (/doc-truyen)');
-      } else if (type === 'buddha') {
-        modalTitle.textContent = 'NGỌC PHẬT CẢM ỨNG';
-        modalDesc.textContent = 'Ngọc Phật phát quang, thiên địa nghịch chuyển! Ngươi có muốn mượn lực lượng bảo vật này để xuyên không bước vào thế giới 2.5D của trò chơi?';
-        modalBtn.textContent = 'ĐĂNG NHẬP VÀO GAME';
-        modalBtn.onclick = () => alert('Chuyển hướng đến Màn hình Game Login (/game-login)');
-      } else if (type === 'map') {
-        modalTitle.textContent = 'CỬU CHÂU THẾ GIỚI QUAN';
-        modalDesc.textContent = 'Xem bản đồ phân bố các đại châu, lịch sử các lần đại chiến chính tà và các bí cảnh cổ xưa trong 3.000 chương truyện.';
-        modalBtn.textContent = 'KHÁM PHÁ BẢN ĐỒ';
-        modalBtn.onclick = () => alert('Mở sơ đồ thế giới quan & lore truyện (/the-gioi-quan)');
-      }
-      modal.classList.add('active');
-    }
+  document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
 
-    function closePortal() {
-      modal.classList.remove('active');
-    }
-  </script>
 </body>
 </html>

@@ -17,9 +17,9 @@ jobs:
 
       - name: Kiem tra su ton tai cua cac file giao dien
         run: |
-          echo "Kiem tra file index / preview..."
+          echo "Kiem tra file index"
           ls -la
-          test -f preview_landing_chamber.html || test -f index.html
+          test -f index.html || test -f reader.html
           echo "Tat ca file da san sang!"
 
   # STAGE 2: Trien khai truc tiep bang Vercel CLI

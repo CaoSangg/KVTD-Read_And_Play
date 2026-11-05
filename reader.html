@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khấu Vấn Tiên Đạo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Playfair+Display:wght@600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f7f3e8;
+      --text-color: #2b2b2b;
+      --panel-bg: rgba(255, 255, 255, 0.85);
+      --border-color: #d8ceb8;
+      --accent-color: #b45309;
+      --font-family: 'Lora', serif;
+      --font-size: 19px;
+      --line-height: 1.85;
+      --max-width: 820px;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #121418;
+      --text-color: #d1d5db;
+      --panel-bg: rgba(24, 27, 33, 0.9);
+      --border-color: #2e3540;
+      --accent-color: #d4af37;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #ffffff;
+      --text-color: #111827;
+      --panel-bg: rgba(248, 249, 250, 0.9);
+      --border-color: #e5e7eb;
+      --accent-color: #0284c7;
+    }
+
+    [data-theme="sepia"] {
+      --bg-color: #f7f3e8;
+      --text-color: #2b2b2b;
+      --panel-bg: rgba(244, 237, 220, 0.92);
+      --border-color: #d8ceb8;
+      --accent-color: #b45309;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-family);
+      font-size: var(--font-size);
+      line-height: var(--line-height);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Sticky Control Bar */
+    .reader-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-icon:hover {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .book-title-header {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Playfair Display', 'Merriweather', serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: 2px;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    @media (max-width: 640px) {
+      .book-title-header {
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+      }
+    }
+
+    /* Reading Content Area */
+    .reader-container {
+      flex: 1;
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 50px 24px 100px;
+    }
+
+    .chapter-heading {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .chapter-index {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+
+    .chapter-name {
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1.4;
+    }
+
+    .chapter-text p {
+      margin-bottom: 1.4em;
+      text-align: justify;
+      text-indent: 1.5em;
+    }
+
+    /* Bottom Navigation (Chương trước / sau) */
+    .chapter-pagination {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px dashed var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-nav-chapter {
+      padding: 10px 22px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-nav-chapter:hover {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    /* Drawer Sidebar (Mục lục) */
+    .toc-drawer {
+      position: fixed;
+      top: 0;
+      left: -380px;
+      width: 350px;
+      height: 100vh;
+      background: var(--panel-bg);
+      backdrop-filter: blur(15px);
+      border-right: 1px solid var(--border-color);
+      z-index: 100;
+      transition: left 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 10px 0 30px rgba(0,0,0,0.2);
+    }
+
+    .toc-drawer.open {
+      left: 0;
+    }
+
+    .toc-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toc-list {
+      flex: 1;
+      overflow-y: auto;
+      list-style: none;
+      padding: 10px 0;
+    }
+
+    .toc-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      border-left: 3px solid transparent;
+    }
+
+    .toc-item:hover, .toc-item.active {
+      background: rgba(0,0,0,0.05);
+      border-left-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    /* Overlay when Drawer opens */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 90;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Settings Modal / Dropdown */
+    .settings-panel {
+      position: absolute;
+      top: 60px;
+      right: 24px;
+      width: 300px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 60;
+    }
+
+    .settings-panel.active {
+      display: flex;
+    }
+
+    .setting-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      color: var(--accent-color);
+    }
+
+    .theme-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .btn-theme {
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-color);
+    }
+
+    .btn-theme.active {
+      border-color: var(--accent-color);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body data-theme="sepia">
+
+  <!-- Top Sticky Navigation -->
+  <nav class="reader-navbar">
+    <div class="nav-left">
+      <a href="index.html" class="btn-icon" title="Quay về Thư Phòng">
+        <span>🏛️</span> Thư Phòng
+      </a>
+      <button class="btn-icon" onclick="toggleDrawer()">
+        <span>📜</span> Mục Lục
+      </button>
+    </div>
+
+    <div class="book-title-header">
+      Khấu Vấn Tiên Đạo
+    </div>
+
+    <div class="nav-right">
+      <button class="btn-icon" onclick="toggleSettings()">
+        <span>⚙️</span> Tùy Biến
+      </button>
+    </div>
+  </nav>
+
+  <!-- Settings Dropdown Panel -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="setting-group">
+      <label>Màu Nền Giao Diện</label>
+      <div class="theme-buttons">
+        <button class="btn-theme active" onclick="setTheme('sepia')">Vàng ấm</button>
+        <button class="btn-theme" onclick="setTheme('light')">Sáng</button>
+        <button class="btn-theme" onclick="setTheme('dark')">Tối</button>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <label>Cỡ Chữ</label>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="btn-icon" onclick="changeFontSize(-1)">A-</button>
+        <span id="fontSizeDisplay" style="font-size: 0.9rem; flex: 1; text-align: center;">19px</span>
+        <button class="btn-icon" onclick="changeFontSize(1)">A+</button>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <label>Phông Chữ</label>
+      <select id="fontFamilySelect" onchange="setFontFamily(this.value)" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--panel-bg); color: var(--text-color); font-size: 0.88rem; cursor: pointer;">
+        <option value="'Lora', serif">Lora (Có chân mềm mại)</option>
+        <option value="'Merriweather', serif">Merriweather (Cổ điển ấm áp)</option>
+        <option value="'Be Vietnam Pro', 'Roboto', sans-serif">Sans-serif (Không chân hiện đại)</option>
+        <option value="'JetBrains Mono', 'Courier New', monospace">Monospace (Đơn cách độc đáo)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Table of Contents Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+  <aside class="toc-drawer" id="tocDrawer">
+    <div class="toc-header">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.15rem; letter-spacing: 1px; color: var(--accent-color);">MỤC LỤC CHƯƠNG</h3>
+      <button class="btn-icon" onclick="toggleDrawer()">✕</button>
+    </div>
+    <ul class="toc-list" id="tocList">
+      <li class="toc-item active" onclick="loadChapter(1); closeDrawer();">Chương 1: Phàm trần thiếu niên</li>
+      <li class="toc-item" onclick="loadChapter(2); closeDrawer();">Chương 2: Thần bí cổ miếu</li>
+      <li class="toc-item" onclick="loadChapter(3); closeDrawer();">Chương 3: Ngọc Phật dị biến</li>
+      <li class="toc-item" onclick="loadChapter(4); closeDrawer();">Chương 4: Tiên đồ sơ khởi</li>
+      <li class="toc-item" onclick="loadChapter(5); closeDrawer();">Chương 5: Luyện Khí tầng một</li>
+    </ul>
+  </aside>
+
+  <!-- Reading Container -->
+  <main class="reader-container">
+    <div class="chapter-heading">
+      <div class="chapter-index" id="chapterIndex">QUYỂN 1 • CHƯƠNG 1</div>
+      <h1 class="chapter-name" id="chapterTitle">Phàm trần thiếu niên</h1>
+    </div>
+
+    <article class="chapter-text" id="chapterBody">
+      <p>Hoàng hôn buông xuống, ánh ráng chiều màu vỏ quýt nhuộm đỏ cả một vùng trời phía tây thôn Lạc Diệp. Gió thu se lạnh khẽ lướt qua rặng liễu đầu làng, mang theo mùi ngai ngái của đất ẩm và rơm rạ.</p>
+      
+      <p>Tần Tang ngồi xếp bằng bên tảng đá xanh cạnh bờ suối, tay cầm một con cá nhỏ vừa mới câu được. Thiếu niên vóc người gầy gò, khuôn mặt thanh tú nhưng trong đôi mắt lại phảng phất nét kiên nghị vượt xa lứa tuổi mười lăm mười sáu bình thường.</p>
+      
+      <p>Trước ngực hắn, giấu kỹ dưới lớp áo vải thô bạc màu, là một miếng ngọc bội hình Phật nho nhỏ chỉ cỡ ngón tay cái. Mặt ngọc đã ngả màu vàng ố vì năm tháng, bề mặt nhẵn bóng do thường xuyên được vuốt ve. Đây là di vật duy nhất phụ mẫu để lại cho hắn trước khi mất vì nạn đói năm đó.</p>
+
+      <p>"Nghe nói trên núi Vân Lạc có thần tiên ngự kiếm phi hành, hái mây đuổi trăng... Thế gian này, liệu thật sự có tiên nhân sao?"</p>
+
+      <p>Tần Tang khẽ lẩm bẩm, ngón tay bất giác chạm vào Ngọc Phật. Đột nhiên, dường như cảm ứng được tâm niệm của thiếu niên, miếng Ngọc Phật trước ngực khẽ run lên một cái, một tia ấm áp vô hình từ ngực lan toả khắp kinh mạch, nhanh tới mức khiến hắn tưởng như đó chỉ là ảo giác...</p>
+    </article>
+
+    <div class="chapter-pagination">
+      <button class="btn-nav-chapter" onclick="prevChapter()">← Chương trước</button>
+      <span style="font-size: 0.9rem; color: #94a3b8;" id="pageIndicator">Chương 1 / 3000</span>
+      <button class="btn-nav-chapter" onclick="nextChapter()">Chương sau →</button>
+    </div>
+  </main>
+
+  <script>
+    // Theme controller
+    function setTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      document.querySelectorAll('.btn-theme').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('onclick')?.includes(theme));
+      });
+      localStorage.setItem('reader_theme', theme);
+    }
+
+    // Font size
+    let currentFontSize = 19;
+    function changeFontSize(delta) {
+      currentFontSize = Math.max(14, Math.min(32, currentFontSize + delta));
+      document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+      document.getElementById('fontSizeDisplay').textContent = currentFontSize + 'px';
+      localStorage.setItem('reader_fontsize', currentFontSize);
+    }
+
+    // Font family
+    function setFontFamily(font) {
+      document.documentElement.style.setProperty('--font-family', font);
+      localStorage.setItem('reader_fontfamily', font);
+    }
+
+    // Drawer controls
+    function toggleDrawer() {
+      document.getElementById('tocDrawer').classList.toggle('open');
+      document.getElementById('drawerOverlay').classList.toggle('active');
+    }
+
+    function closeDrawer() {
+      document.getElementById('tocDrawer').classList.remove('open');
+      document.getElementById('drawerOverlay').classList.remove('active');
+    }
+
+    // Settings toggle
+    function toggleSettings() {
+      document.getElementById('settingsPanel').classList.toggle('active');
+    }
+
+    // Close settings if clicked outside
+    document.addEventListener('click', (e) => {
+      const panel = document.getElementById('settingsPanel');
+      if (!panel.contains(e.target) && !e.target.closest('button[onclick="toggleSettings()"]')) {
+        panel.classList.remove('active');
+      }
+    });
+
+    // Sample Chapter Mock Data
+    const mockChapters = {
+      1: {
+        title: "Phàm trần thiếu niên",
+        body: `<p>Hoàng hôn buông xuống, ánh ráng chiều màu vỏ quýt nhuộm đỏ cả một vùng trời phía tây thôn Lạc Diệp. Gió thu se lạnh khẽ lướt qua rặng liễu đầu làng, mang theo mùi ngai ngái của đất ẩm và rơm rạ.</p>
+        <p>Tần Tang ngồi xếp bằng bên tảng đá xanh cạnh bờ suối, tay cầm một con cá nhỏ vừa mới câu được. Thiếu niên vóc người gầy gò, khuôn mặt thanh tú nhưng trong đôi mắt lại phảng phất nét kiên nghị vượt xa lứa tuổi bình thường.</p>
+        <p>Trước ngực hắn, giấu kỹ dưới lớp áo vải thô bạc màu, là một miếng ngọc bội hình Phật nho nhỏ chỉ cỡ ngón tay cái. Mặt ngọc đã ngả màu vàng ố vì năm tháng. Đây là di vật duy nhất phụ mẫu để lại cho hắn trước khi mất.</p>
+        <p>"Nghe nói trên núi Vân Lạc có thần tiên ngự kiếm phi hành... Liệu thế gian này thật sự có tiên nhân sao?"</p>`
+      },
+      2: {
+        title: "Thần bí cổ miếu",
+        body: `<p>Đêm đen như mực, gió gào thét từng cơn quất vào cánh rừng rậm rạp. Cơn mưa rừng bất chợt ập đến khiến Tần Tang phải vội vã tìm nơi trú ẩn.</p>
+        <p>Phía xa xa giữa sườn núi mờ ảo hiện lên một gian miếu hoang đổ nát. Tường vôi đã tróc lở từng mảng lớn, mái ngói sụp một nửa, bức tượng thần bên trong chỉ còn lại nửa thân dưới phủ đầy rêu phong.</p>
+        <p>Tần Tang bước vào trong miếu, nhóm lên một đống lửa nhỏ sưởi ấm. Bỗng nhiên, từ sâu trong bóng tối nơi góc miếu vang lên tiếng hít thở dồn dập kèm theo mùi máu tanh nồng nặc...</p>`
+      },
+      3: {
+        title: "Ngọc Phật dị biến",
+        body: `<p>Trong góc tối là một lão giả áo bào rách rưới, trước ngực có một vết thương sâu hoắm đang chảy máu đen kịt. Rõ ràng là trúng phải kịch độc.</p>
+        <p>Lão giả mở trừng hai mắt nhìn Tần Tang, ánh mắt lóe lên vẻ hung quang của loài dã thú bị dồn vào đường cùng: "Tiểu quỷ... Lại đây cho lão phu!"</p>
+        <p>Đúng vào khoảnh khắc lão vung chưởng chụp tới đầu Tần Tang, miếng Ngọc Phật trước ngực thiếu niên bỗng nhiên tỏa ra kim quang vạn trượng, một tiếng Phạn âm trầm bổng vang vọng khắp đất trời...</p>`
+      }
+    };
+
+    let curChap = 1;
+    function loadChapter(num) {
+      if (!mockChapters[num]) {
+        alert("Chương này đang được tải từ cơ sở dữ liệu...");
+        return;
+      }
+      curChap = num;
+      document.getElementById('chapterIndex').textContent = `QUYỂN 1 • CHƯƠNG ${num}`;
+      document.getElementById('chapterTitle').textContent = mockChapters[num].title;
+      document.getElementById('chapterBody').innerHTML = mockChapters[num].body;
+      document.getElementById('pageIndicator').textContent = `Chương ${num} / 3000`;
+      
+      // Update active in TOC
+      document.querySelectorAll('.toc-item').forEach((item, idx) => {
+        item.classList.toggle('active', idx + 1 === num);
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function prevChapter() {
+      if (curChap > 1) loadChapter(curChap - 1);
+    }
+
+    function nextChapter() {
+      if (curChap < 3) loadChapter(curChap + 1);
+      else alert("Đang tải các chương tiếp theo...");
+    }
+
+    // Restore saved settings on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('reader_theme') || 'sepia';
+      document.body.setAttribute('data-theme', savedTheme);
+      document.querySelectorAll('.btn-theme').forEach(b => {
+        if (b.getAttribute('onclick')?.includes(savedTheme)) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+
+      const savedFontSize = localStorage.getItem('reader_fontsize');
+      if (savedFontSize) {
+        currentFontSize = parseInt(savedFontSize, 10);
+        document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+        document.getElementById('fontSizeDisplay').textContent = currentFontSize + 'px';
+      }
+
+      const savedFontFamily = localStorage.getItem('reader_fontfamily');
+      if (savedFontFamily) {
+        document.documentElement.style.setProperty('--font-family', savedFontFamily);
+        const fontSelect = document.getElementById('fontFamilySelect');
+        if (fontSelect) fontSelect.value = savedFontFamily;
+      }
+    });
+  </script>
+</body>
+</html>
