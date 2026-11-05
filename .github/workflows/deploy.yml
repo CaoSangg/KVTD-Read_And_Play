@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - Khau Van  Tien Dao
+name: CI/CD Pipeline - Web Tien Dao
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # STAGE 1: Check code 
-  check-code:
+  # STAGE 1: Kiểm tra code
+  kiem-tra-code:
     name: Kiem Tra Files
     runs-on: ubuntu-latest
     steps:
-      - name: Keo code ve
+      - name: Keo code ve may ao
         uses: actions/checkout@v4
 
       - name: Kiem tra su ton tai cua cac file giao dien
@@ -22,21 +22,27 @@ jobs:
           test -f preview_landing_chamber.html || test -f index.html
           echo "Tat ca file da san sang!"
 
-  # STAGE 2: Deploy len Vercel
+  # STAGE 2: Trien khai truc tiep bang Vercel CLI
   deploy:
     name: Deploy Len Vercel
-    needs: check-code
+    needs: kiem-tra-code
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Keo code ve
         uses: actions/checkout@v4
 
-      - name: Deploy len Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.USER_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          working-directory: ./
+      - name: Cai dat Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Thong Tin Environment tu Vercel
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.USER_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build Project voi Vercel
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Artifacts len Production
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
