@@ -25,15 +25,5 @@ Thumbs.db
 # File PDF bài giảng 
 *.pdf
 
-# Images
-*.png
-*.jpg
-*.jpeg
-*.webp
-*.gif
-*.bmp
-*.svg
-*.ico
-
 # File docx
 *.docx

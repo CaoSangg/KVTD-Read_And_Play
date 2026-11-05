@@ -8,29 +8,25 @@ Dự án kết hợp giữa **Nền tảng đọc truyện tương tác** và **
 
 ```text
 d:/MyProject/
-├── preview_landing_chamber.html      # Bản xem trước giao diện Thư Phòng tương tác (mở xem ngay)
-├── .github/
+├── index.html                        # Home page hiện tại
+|-- reader.html                       # Page đọc truyện 
+├── .github/ 
 │   └── workflows/
-│       └── deploy.yml                # File CI/CD GitHub Actions hoàn chỉnh
+│       └── deploy.yml                # File CI/CD pipeline tạm
+|-- images/                           # Các ảnh liên quan đến project 
 └── README.md
 ```
 
 ---
 
-## 2. Hướng Dẫn Xem Thử Giao Diện Ngay Lập Tức
-
-Bạn có thể mở trực tiếp file `preview_landing_chamber.html` bằng trình duyệt Chrome, Edge hoặc Cốc Cốc trên máy tính:
-1. Mở thư mục `D:\MyProject`.
-2. Click đúp chuột vào file **`preview_landing_chamber.html`**.
-3. **Trải nghiệm**:
+## 2. Trải Nghiệm:
    * Các hạt bụi linh khí lơ lửng và màn sương mù chuyển động trong không gian.
-   * Rê chuột qua **Cổ Thư Tàng Kinh**, **Ngọc Phật Bổn Mệnh** hoặc **Cửu Châu Cổ Đồ** để thấy hiệu ứng hào quang tỏa sáng, bảo vật bay bổng lên nhẹ.
-   * Click chuột vào từng bảo vật để mở màn hình chuyển hướng tương ứng (Vào đọc truyện hoặc Xuyên không vào game).
+   * Rê chuột qua Cổ Thư, Sơn Hà Đồ và Ngọc Phật để trải nghiệm các tính năng. 
 
 ---
 
-## 3. Cấu Hình CI/CD Pipeline với GitHub Actions
+## 3. Cấu Hình tạm CI/CD Pipeline
 
 Khi đẩy code lên GitHub sẽ tự động kích hoạt:
-1. **Kiểm tra code**: Máy ảo Ubuntu tự động cài đặt thư viện và build và test thử nghiệm để bắt lỗi.
-2. **Deploy lên Vercel**: Sau khi build thành công, tự động deploy website live ra Internet.
+1. Kiểm tra code: Máy ảo Ubuntu tự động cài đặt thư viện và build và test thử nghiệm để bắt lỗi.
+2. Deploy lên Vercel: Sau khi build thành công, tự động deploy website live ra Internet.
