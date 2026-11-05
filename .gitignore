@@ -34,3 +34,6 @@ Thumbs.db
 *.bmp
 *.svg
 *.ico
+
+# File docx
+*.docx
