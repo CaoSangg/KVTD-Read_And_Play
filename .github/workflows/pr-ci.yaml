@@ -1,0 +1,36 @@
+name: PR Quality Gate & CI Check
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  kiem-tra-chat-luong:
+    name: Kiem Tra Files & Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keo code ve may ao
+        uses: actions/checkout@v4
+
+      - name: Kiem tra su ton tai cua cac file
+        run: |
+          echo "=== Kiem tra file giao dien HTML ==="
+          test -f index.html || { echo "Loi: Thieu file index.html"; exit 1; }
+          test -f reader.html || { echo "Loi: Thieu file reader.html"; exit 1; }
+
+          echo "=== Kiem tra cac file anh assets ==="
+          test -f home_image.png || { echo "Loi: Thieu file home_image.png"; exit 1; }
+          test -f sub_image1.png || { echo "Loi: Thieu file sub_image1.png"; exit 1; }
+          test -f sub_image2.png || { echo "Loi: Thieu file sub_image2.png"; exit 1; }
+          test -f sub_image3.png || { echo "Loi: Thieu file sub_image3.png"; exit 1; }
+
+          echo "Tat ca file cot loi da day du va hop le!"
+
+      - name: Kiem tra cu phap HTML co ban
+        run: |
+          echo "=== Kiem tra the dong mo co ban tren index va reader ==="
+          grep -q "<!DOCTYPE html>" index.html || { echo "Loi: index.html thieu DOCTYPE"; exit 1; }
+          grep -q "</html>" index.html || { echo "Loi: index.html thieu the dong html"; exit 1; }
+          grep -q "<!DOCTYPE html>" reader.html || { echo "Loi: reader.html thieu DOCTYPE"; exit 1; }
+          grep -q "</html>" reader.html || { echo "Loi: reader.html thieu the dong html"; exit 1; }
+          echo "Kiem tra cu phap HTML thanh cong!"

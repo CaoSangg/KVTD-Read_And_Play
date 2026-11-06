@@ -1,54 +1,6 @@
-name: CI/CD Pipeline - Web Tien Dao
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  # STAGE 1: Kiểm tra code
-  kiem-tra-code:
-    name: Kiem Tra Files
-    runs-on: ubuntu-latest
-    steps:
-      - name: Keo code ve may ao
-        uses: actions/checkout@v4
-
-      - name: Kiem tra su ton tai cua cac file giao dien
-        run: |
-          echo "Kiem tra file index"
-          ls -la
-          test -f index.html || test -f reader.html
-          echo "Tat ca file da san sang!"
-
-  # STAGE 2: Trien khai truc tiep bang Vercel CLI
-  deploy:
-    name: Deploy Len Vercel
-    needs: kiem-tra-code
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Keo code ve
-        uses: actions/checkout@v4
-
-      - name: Cai dat Vercel CLI
-        run: npm install --global vercel@latest
-
-      - name: Pull Thong Tin Environment tu Vercel
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Build Project voi Vercel
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Deploy Artifacts len Production
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+# File nay da duoc tach va thay the boi 3 workflow moi:
+# - deploy-preview-feature.yaml (Preview khi push len nhanh feature)
+# - pr-ci.yaml (Kiem tra chat luong khi mo Pull Request vao main)
+# - deploy-production.yaml (Trien khai Production khi merge vao main)
+#
+# Ban co the xoa file nay bang lenh: git rm .github/workflows/deploy.yml
