@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Khấu Vấn Tiên Đạo - Tàng Kinh Các</title>
+  <title>Khấu Vấn Tiên Đạo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Noto+Serif+TC:wght@400;700&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -77,29 +77,186 @@
       display: block;
     }
 
-    /* Tooltip phong cách cổ đại */
+    /* ========================================================
+       TOOLTIP PHONG CÁCH TIÊN HIỆP: LỆNH BÀI KHẮC KIM TỤ KHÍ
+       ======================================================== */
+
     .hitbox-tooltip {
       position: absolute;
-      bottom: -8px;
+      bottom: -14px;
       left: 50%;
       transform: translateX(-50%) translateY(100%);
-      background: rgba(10, 15, 30, 0.92);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(212, 175, 55, 0.8);
-      padding: 7px 18px;
-      border-radius: 20px;
-      font-size: 0.78rem;
-      letter-spacing: 2px;
-      white-space: nowrap;
-      color: #fef08a;
       opacity: 0;
-      transition: all 0.3s ease;
       pointer-events: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.7), 0 0 15px rgba(212, 175, 55, 0.3);
+      white-space: nowrap;
+      transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.25, 1),
+                  transform 0.4s cubic-bezier(0.2, 0.8, 0.25, 1);
+      z-index: 50;
+      /* Hiệu ứng hào quang linh lực tỏa ra xung quanh thẻ */
+      filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.9))
+              drop-shadow(0 0 20px rgba(212, 175, 55, 0.35));
     }
 
+    /* Khi rê chuột: Tooltip trôi lên nhẹ nhàng và bắt đầu nhấp nhô lơ lửng */
     .hitbox:hover .hitbox-tooltip {
       opacity: 1;
+      transform: translateX(-50%) translateY(92%);
+      animation: immortalFloat 3.5s ease-in-out infinite alternate;
+    }
+
+    /* Thân lệnh bài - Cắt 8 góc cổ kính (Octagonal talisman) */
+    .tooltip-inner {
+      position: relative;
+      background: radial-gradient(circle at 50% 30%, #171412 0%, #080605 100%);
+      padding: 10px 18px 9px 18px;
+      text-align: center;
+      /* Cắt vát 4 góc kiểu lệnh bài môn phái */
+      clip-path: polygon(
+        8px 0%, calc(100% - 8px) 0%,
+        100% 8px, 100% calc(100% - 8px),
+        calc(100% - 8px) 100%, 8px 100%,
+        0% calc(100% - 8px), 0% 8px
+      );
+      /* Viền kép mạ đồng vàng */
+      border: 1px solid #d4af37;
+      box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.25);
+    }
+
+    /* Viền chỉ vàng lồng bên trong (Double antique frame) */
+    .tooltip-inner::before {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      clip-path: polygon(
+        7px 0%, calc(100% - 7px) 0%,
+        100% 7px, 100% calc(100% - 7px),
+        calc(100% - 7px) 100%, 7px 100%,
+        0% calc(100% - 7px), 0% 7px
+      );
+      pointer-events: none;
+    }
+
+    /* Vệt sáng linh quang lướt qua khi hover */
+    .tooltip-inner::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 248, 220, 0.25), transparent);
+      transform: skewX(-25deg);
+      pointer-events: none;
+    }
+
+    /* Khi hover: Vệt sáng lặp lại vô tận, mỗi chu kỳ kéo dài 3 giây */
+    .hitbox:hover .tooltip-inner::after {
+      animation: shimmerGleam 3s ease-in-out infinite;
+    }
+
+    /* Hàng trên: Phẩm giai & Phân loại */
+    .tooltip-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    /* Dấu triện son / ngọc ấn */
+    .spirit-badge {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 1px 6px;
+      border-radius: 2px;
+      text-transform: uppercase;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    /* Triện Chu Sa Đỏ */
+    .red-seal {
+      background: #420b0b;
+      color: #ff7b7b;
+      border: 1px solid #991b1b;
+    }
+
+    /* Triện Bích Ngọc */
+    .jade-seal {
+      background: #092c1c;
+      color: #6ee7b7;
+      border: 1px solid #059669;
+    }
+
+    /* Triện Hoàng Kim */
+    .gold-seal {
+      background: #382404;
+      color: #fde047;
+      border: 1px solid #ca8a04;
+    }
+
+    .spirit-rank {
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      color: #a8a29e;
+      font-family: 'Noto Serif TC', serif;
+    }
+
+    /* Tên vật phẩm: Chữ thếp vàng, cổ điển */
+    .tooltip-title {
+      font-family: 'Playfair Display', 'Noto Serif TC', serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 2.5px;
+      color: #fff4d1;
+      text-shadow: 0 1px 2px #000, 0 0 10px rgba(212, 175, 55, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Ký tự phù văn ❖ */
+    .rune {
+      color: #d4af37;
+      font-size: 0.68rem;
+      opacity: 0.85;
+      text-shadow: 0 0 8px #fef08a;
+    }
+
+    /* Khẩu quyết hành động phía dưới */
+    .tooltip-sub {
+      font-size: 0.62rem;
+      color: #d6d3d1;
+      font-style: italic;
+      letter-spacing: 1.5px;
+      margin-top: 3px;
+      opacity: 0.8;
+    }
+
+    /* Hoạt ảnh lơ lửng như ngự khí phi hành */
+    @keyframes immortalFloat {
+      0% {
+        transform: translateX(-50%) translateY(92%);
+      }
+      100% {
+        transform: translateX(-50%) translateY(98%);
+      }
+    }
+
+    @keyframes shimmerGleam {
+     0% {
+      left: -100%;
+     }
+     60% {
+      /* Mất ~1 giây để lướt trọn vẹn qua lệnh bài */
+      left: 160%;
+     }
+     100% {
+      /* ~2 giây còn lại đứng yên bên ngoài (thời gian nghỉ giữa các lần lướt) */
+      left: 160%;
+     }
     }
 
     /* Cổ Thư */
@@ -259,13 +416,21 @@
       pointer-events: all;
     }
     .modal-box {
-      background: #0f172a;
+      background: radial-gradient(circle at 50% 20%, #1a1612 0%, #0c0a08 100%);
       border: 1px solid #d4af37;
-      border-radius: 20px;
-      padding: 36px 30px;
+      outline: 1px solid rgba(212, 175, 55, 0.4);
+      outline-offset: -5px;
+      /* Cắt vát góc cổ phong thay vì bo tròn */
+      clip-path: polygon(
+        14px 0, calc(100% - 14px) 0,
+        100% 14px, 100% calc(100% - 14px),
+        calc(100% - 14px) 100%, 14px 100%,
+        0 calc(100% - 14px), 0 14px
+      );
+      padding: 38px 32px;
       max-width: 440px;
       text-align: center;
-      box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(212, 175, 55, 0.25);
       transform: scale(0.92);
       transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
@@ -316,17 +481,53 @@
   <!-- LAYER 0: Ảnh nền gốc -->
   <img src="images/home_image.png" alt="Thư Phòng Tu Tiên" class="layer bg-layer">
 
-  <!-- VÙNG CẢM ỨNG (hitbox) — phải đặt TRƯỚC các sprite để CSS ~ selector hoạt động -->
-  <a href="reader.html" class="hitbox hitbox-tome" title="Đọc Truyện">
-    <span class="hitbox-tooltip">CỔ THƯ</span>
+  <!-- VÙNG CẢM ỨNG (HITBOX) ĐÃ NÂNG CẤP TOOLTIP CỔ PHONG -->
+  <!-- 1. CỔ THƯ -->
+  <a href="reader.html" class="hitbox hitbox-tome">
+    <div class="hitbox-tooltip">
+      <div class="tooltip-inner">
+        <div class="tooltip-header">
+          <span class="spirit-badge gold-seal">TIÊN KHÍ</span>
+          <span class="spirit-rank">???????</span>
+        </div>
+        <div class="tooltip-title">
+          <span class="rune">❖</span> CỔ THƯ VÔ DANH <span class="rune">❖</span>
+        </div>
+        <div class="tooltip-sub">« Nhấp ??? »</div>
+      </div>
+    </div>
   </a>
 
-  <div class="hitbox hitbox-buddha" onclick="openModal('buddha')">
-    <span class="hitbox-tooltip">NGỌC PHẬT</span>
+  <!-- 2. NGỌC PHẬT -->
+  <div class="hitbox hitbox-buddha" onclick="openModal('map')">
+    <div class="hitbox-tooltip">
+      <div class="tooltip-inner">
+        <div class="tooltip-header">
+          <span class="spirit-badge gold-seal">TIÊN KHÍ</span>
+          <span class="spirit-rank">???????</span>
+        </div>
+        <div class="tooltip-title">
+          <span class="rune">❖</span> NGỌC PHẬT <span class="rune">❖</span>
+        </div>
+        <div class="tooltip-sub">« Nhấp ??? »</div>
+      </div>
+    </div>
   </div>
 
+  <!-- 3. SƠN HÀ ĐỒ -->
   <div class="hitbox hitbox-map" onclick="openModal('map')">
-    <span class="hitbox-tooltip"> SƠN HÀ ĐỒ</span>
+    <div class="hitbox-tooltip">
+      <div class="tooltip-inner">
+        <div class="tooltip-header">
+          <span class="spirit-badge gold-seal">TIÊN KHÍ</span>
+          <span class="spirit-rank">???????</span>
+        </div>
+        <div class="tooltip-title">
+          <span class="rune">❖</span> CỬU CHÂU SƠN HÀ ĐỒ <span class="rune">❖</span>
+        </div>
+        <div class="tooltip-sub">« Nhấp ??? »</div>
+      </div>
+    </div>
   </div>
 
   <!-- SPRITE LAYERS: Ảnh vật phẩm cắt riêng, phủ trùng khít lên nền -->
